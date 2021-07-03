@@ -23,7 +23,7 @@ In order to be able to run this code of course you need to have python3 but also
 
 * [`PySimpleGUI`](https://pysimplegui.readthedocs.io/en/latest/)
 * [`PyAutoGUI`](https://pyautogui.readthedocs.io/en/latest/)
-* [`OprenCV`](https://docs.opencv.org/4.5.2/index.html)
+* [`OpenCV`](https://docs.opencv.org/4.5.2/index.html)
 * [`imageio`](https://imageio.readthedocs.io/en/stable/)
 * [`Xlib`](https://github.com/python-xlib/python-xlib)
 
