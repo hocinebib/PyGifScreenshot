@@ -15,6 +15,7 @@ Then you can run the script with the following command :
     Hocine Meraouna
 
 """
+import threading
 import pyautogui
 import PySimpleGUI as sg
 import cv2
@@ -23,7 +24,7 @@ from Xlib import display
 from collections import namedtuple
 
 
-def get_active_window():
+def get_active_window(disp, root, NET_ACTIVE_WINDOW):
     win_id = root.get_full_property(NET_ACTIVE_WINDOW,
                                     Xlib.X.AnyPropertyType).value[0]
     try:
@@ -31,7 +32,7 @@ def get_active_window():
     except Xlib.error.XError:
         pass
 
-def get_absolute_geometry(win):
+def get_absolute_geometry(win, root):
     """
     Returns the (x, y, height, width) of a window relative to the top-left
     of the screen.
@@ -46,29 +47,33 @@ def get_absolute_geometry(win):
         if parent.id == root.id:
             break
         win = parent
-    return (x, y+35, geom.width, geom.height-35)
+    return (x, y+53, geom.width, geom.height-53)
 
 
-def get_window_bbox(win):
-    """
-    Returns (x1, y1, x2, y2) relative to the top-left of the screen.
-    """
-    geom = get_absolute_geometry(win)
-    x1 = geom.x
-    y1 = geom.y
-    x2 = x1 + geom.width
-    y2 = y1 + geom.height
-    return (x1, y1, x2, y2)
-
-
-layout = [[sg.Cancel(), sg.Button('Test1'), sg.Button('Test2')]]
+layout = [[sg.InputText(size=(30, 1), key="File-Name", default_text='ScreenShot_Name')], [sg.Button('Generate'), sg.Button('Stop'), sg.Exit()]]
 
 window = sg.Window('PyScreenShot', layout, size=(500, 500),
                    resizable=True, alpha_channel=0.4, background_color='grey')
 
-event, values = window.read()
 
+def creating_screenshots():
+    """
+    """
+    i = 0
+    while stop != True:
+        disp = display.Display()
+        root = disp.screen().root
 
+        NET_ACTIVE_WINDOW = disp.intern_atom('_NET_ACTIVE_WINDOW')
+        MyGeom = namedtuple('MyGeom', 'x y height width')
+        win = get_active_window(disp, root, NET_ACTIVE_WINDOW)
+
+        myScreenshot = pyautogui.screenshot(region=(get_absolute_geometry(win, root)))
+        myScreenshot.save('Screenshots/'+values['File-Name']+str(i)+'.png')
+        image = cv2.imread('Screenshots/'+values['File-Name']+str(i)+'.png')
+        new = (image-40)*1.5
+        cv2.imwrite('Screenshots/'+values['File-Name']+str(i)+'.png', new)
+        i += 1
 
 #d = display.Display()
 #root = d.screen().root
@@ -81,25 +86,17 @@ event, values = window.read()
 #    if name: 
 #        print(name)
 
+stop = False
+
 while True:                             
     event, values = window.read()
-    if event == 'Test1':
-        window.Minimize()
-    if event == 'Test2':
-        disp = display.Display()
-        root = disp.screen().root
 
-        NET_ACTIVE_WINDOW = disp.intern_atom('_NET_ACTIVE_WINDOW')
-        MyGeom = namedtuple('MyGeom', 'x y height width')
-        win = get_active_window()
-
-        myScreenshot = pyautogui.screenshot(region=(get_absolute_geometry(win)))
-        myScreenshot.save('Screenshots/test.png')
-        image = cv2.imread('Screenshots/test.png')
-        new = (image-40)*1.5
-        cv2.imwrite('Screenshots/test.png', new)
-
-    if event in (None, 'Cancel'):
-        break  
+    if event in (None, 'Exit'):
+        break 
+    elif event == 'Generate':
+        stop = False
+        threading.Thread(target=creating_screenshots, daemon=True).start()
+    elif event == 'Stop':
+        stop = True 
 
 window.close()
