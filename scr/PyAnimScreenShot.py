@@ -16,11 +16,11 @@ Then you can run the script with the following command :
 
 """
 import pyautogui
+import PySimpleGUI as sg
+import cv2
 import Xlib
 from Xlib import display
 from collections import namedtuple
-import PySimpleGUI as sg
-import time
 
 
 def get_active_window():
@@ -93,10 +93,11 @@ while True:
         MyGeom = namedtuple('MyGeom', 'x y height width')
         win = get_active_window()
 
-
-        #myScreenshot = pyautogui.screenshot()
         myScreenshot = pyautogui.screenshot(region=(get_absolute_geometry(win)))
         myScreenshot.save('Screenshots/test.png')
+        image = cv2.imread('Screenshots/test.png')
+        new = (image-40)*1.5
+        cv2.imwrite('Screenshots/test.png', new)
 
     if event in (None, 'Cancel'):
         break  
