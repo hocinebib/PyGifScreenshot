@@ -28,7 +28,7 @@ from collections import namedtuple
 
 layout = [[sg.InputText(size=(30, 1), key="File-Name", default_text='ScreenShot_Name')], [sg.Button('Generate'), sg.Button('Stop'), sg.Exit()]]
 
-window = sg.Window('PyScreenShot', layout, size=(500, 500),
+window = sg.Window('PyGifScreenShot', layout, size=(500, 500),
                    resizable=True, alpha_channel=0.4, background_color='grey')
 
 stop = True
