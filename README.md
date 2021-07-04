@@ -2,6 +2,7 @@
 
 ## Description :
 This is a small python script to generate animated screenshots
+It will generate an animated gif of the selected part of the screen
 
 ---
 
