@@ -15,9 +15,6 @@ This is a small python script to generate animated screenshots
 * Linux : 
 The code has only been tested on Ubuntu.
 
-### Browser :
-The code has only been tested with firefox.
-
 ### Python packages :
 In order to be able to run this code of course you need to have python3 but also some python packages :
 
